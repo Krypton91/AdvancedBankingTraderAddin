@@ -46,10 +46,10 @@ modded class DayZPlayerImplement
 		}
 
 		if (!CanPayCosts(itemCosts))
-		{
-			TraderMessage.PlayerWhite("#tm_cant_afford", this);
-			return;
-		}
+        {
+            TraderMessage.PlayerWhite("#tm_cant_afford", this);
+            return;
+        }
 
 		int vehicleKeyHash = 0;
 
@@ -186,19 +186,34 @@ modded class DayZPlayerImplement
     bool CanPayCosts(int costsToPay)
     {
         PlayerBase player = PlayerBase.Cast(this);
-        if(costsToPay < getPlayerCurrencyAmount())
+        KR_JsonDatabaseHandler playerdata = KR_JsonDatabaseHandler.LoadPlayerData(player.GetIdentity().GetPlainId(), player.GetIdentity().GetName());
+        if(playerdata)
         {
-            KR_JsonDatabaseHandler playerdata = KR_JsonDatabaseHandler.LoadPlayerData(player.GetIdentity().GetPlainId(), player.GetIdentity().GetName());
-            if(playerdata)
+             if(costsToPay < playerdata.GetBankCredit())
+                return CanPayWithBank();
+        }
+
+        if(costsToPay <= getPlayerCurrencyAmount())
+            return true;
+        
+        return false;
+    }
+
+	bool CanPayWithBank()
+    {
+        if(NeedsBankCardInHandToPayOnTrader)
+        {
+            EntityAI item_InHands = this.GetHumanInventory().GetEntityInHands();
+            if(item_InHands)
             {
-                if(costsToPay < playerdata.GetBankCredit())
-                    return true;
+                KeyCard_Base atmcard;
+                if(Class.CastTo(atmcard, item_InHands))
+                    return true; //yeeet
             }
         }
         else
         {
-			if(costsToPay <= getPlayerCurrencyAmount())
-            	return true;
+            return true;
         }
         return false;
     }

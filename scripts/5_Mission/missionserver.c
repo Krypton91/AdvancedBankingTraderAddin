@@ -8,12 +8,13 @@ modded class MissionServer
 {
     protected ref AdvBankingTraderConfig m_TraderAddinServerConfig;
     override void OnInit()
-	{
+    {
         super.OnInit();
         m_TraderAddinServerConfig = AdvBankingTraderConfig.LoadConfig();
         if(m_TraderAddinServerConfig)
             Print("[Advanced Banking Trader Addin] -> Server Config Loadet!");
-        
+        //assign static stuff from cfg
+        NeedsBankCardInHandToPayOnTrader = m_TraderAddinServerConfig.NeedsBankCardInHandToPayOnTrader;
         GetRPCManager().AddRPC("KR_BANKINGTRADERADDIN", "ServerConfigRequest", this, SingleplayerExecutionType.Server);
     }
 
