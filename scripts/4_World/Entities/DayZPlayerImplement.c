@@ -45,7 +45,7 @@ modded class DayZPlayerImplement
 			return;
 		}
 
-		if (!CanPayCosts(m_Player_CurrencyAmount))
+		if (!CanPayCosts(itemCosts))
 		{
 			TraderMessage.PlayerWhite("#tm_cant_afford", this);
 			return;
@@ -197,7 +197,8 @@ modded class DayZPlayerImplement
         }
         else
         {
-            return true;
+			if(costsToPay <= getPlayerCurrencyAmount())
+            	return true;
         }
         return false;
     }
